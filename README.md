@@ -6,7 +6,7 @@ I created this API to make it easier for me to create something on various websi
 
 run it with the following code
 
-#### `flask --app main run --debug --port 5020`
+#### `flask --app main run --debug --port 5010`
 
 ## Pengguan API
 

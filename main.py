@@ -6,7 +6,7 @@ import random
 import string
 
 app = Flask(__name__)
-path = '/api/v-1/generate-module'
+path = '/api/v-1'
 
 def custom_id(length):
     random_segment = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
@@ -14,12 +14,13 @@ def custom_id(length):
 
 @app.route(f'{path}/uuid/<string:element>', methods=['POST'])
 def generate_uuid(element):
-    id=f"VO{element}-3010-{custom_id(5)}-8246{custom_id(3)}-{custom_id(10)}-{custom_id(5)}"
+    code=element.upper()
+    id=f"VO{code}-3010-{custom_id(5)}-8246{custom_id(3)}-{custom_id(10)}-{custom_id(5)}"
     return response.res_success(id) 
     
 @app.route(f'{path}/encode', methods=['POST'])
 def encode():
-    data = request.json.get('data', '')
+    data = request.json.get('encode', '')
     if not isinstance(data, str):
         data = json.dumps(data)    
     # Encode the data to Base64
@@ -30,7 +31,7 @@ def encode():
 
 @app.route(f'{path}/decode', methods=['POST'])
 def decode():
-    encoded_data = request.json.get('encoded', '')
+    encoded_data = request.json.get('decode', '')
     if not isinstance(encoded_data, str):
         return response.res_error()
     

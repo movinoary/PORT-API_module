@@ -12,11 +12,11 @@ run it with the following code
 
 Development Path
 
-#### `http://127.0.0.1:5010`
+#### `http://127.0.0.1:5010/api/v1/`
 
 Production Path
 
-#### `http://127.0.0.1:5010`
+#### `http://127.0.0.1:5010/api/v1/`
 
 ### Route API
 

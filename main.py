@@ -1,5 +1,6 @@
 from flask import Flask, request, send_from_directory
 from werkzeug.utils import secure_filename
+from flask_cors import CORS, cross_origin
 import os
 import response
 import base64
@@ -9,6 +10,7 @@ import string
 
 app = Flask(__name__)
 path = '/api/v-1'
+CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -59,6 +61,7 @@ def get_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route(f'{path}/upload-photo/<string:element>', methods=['POST'])
+@cross_origin(origins=["http://localhost:3000"])
 def upload_file(element):
     if 'file' not in request.files:
         return response.res_error()
@@ -68,7 +71,7 @@ def upload_file(element):
         return response.res_error()
 
     if file:
-        filename = element + secure_filename(file.filename)
+        filename = element+"-"+secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         

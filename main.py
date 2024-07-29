@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, request, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import response
@@ -58,8 +58,8 @@ def decode():
 def get_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-@app.route(f'{path}/upload', methods=['POST'])
-def upload_file():
+@app.route(f'{path}/upload-photo/<string:element>', methods=['POST'])
+def upload_file(element):
     if 'file' not in request.files:
         return response.res_error()
 
@@ -68,7 +68,7 @@ def upload_file():
         return response.res_error()
 
     if file:
-        filename = secure_filename(file.filename)
+        filename = element + secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         

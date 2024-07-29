@@ -1,4 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
+from werkzeug.utils import secure_filename
+import os
 import response
 import base64
 import json
@@ -8,9 +10,18 @@ import string
 app = Flask(__name__)
 path = '/api/v-1'
 
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 def custom_id(length):
     random_segment = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
     return random_segment
+
+@app.route(f'{path}/')
+def wellcome():
+    return response.res_success("Hello") 
 
 @app.route(f'{path}/uuid/<string:element>', methods=['POST'])
 def generate_uuid(element):
@@ -42,3 +53,25 @@ def decode():
         return response.res_success(result_decode)
     except (base64.binascii.Error, UnicodeDecodeError):
         return response.res_error()
+
+@app.route(f'{path}/get-photo/<filename>')
+def get_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route(f'{path}/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return response.res_error()
+
+    file = request.files['file']
+    if file.filename == '':
+        return response.res_error()
+
+    if file:
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        return response.res_success(f'{path}/get-photo/{filename}')
+
+    return response.res_error()

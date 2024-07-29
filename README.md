@@ -25,11 +25,13 @@ Production Path
 
 ### Route API
 
-| Parameter | Methods | Parameter                              |
-| :-------- | :------ | :------------------------------------- |
-| /uuid     | POST    | create a UUID according to what I want |
-| /encode   | POST    | translate base64 as i want             |
-| /decode   | POST    | create base64 as i want                |
+| Parameter        | Methods | Parameter                              |
+| :--------------- | :------ | :------------------------------------- |
+| /uuid            | POST    | create a UUID according to what I want |
+| /upload-photo    | POST    | upload any photo to server             |
+| /get-photo<name> | GET     | get any photo from server              |
+| /encode          | POST    | translate base64 as i want             |
+| /decode          | POST    | create base64 as i want                |
 
 ## Curl
 

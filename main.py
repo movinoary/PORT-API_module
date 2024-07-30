@@ -37,8 +37,7 @@ def encode():
     if not isinstance(data, str):
         data = json.dumps(data)    
     # Encode the data to Base64
-    encoded_data = base64.b64encode(data.encode('utf-32-be')).decode()
-    double_encoded_data = base64.b64encode(encoded_data.encode("utf-8")).decode()
+    double_encoded_data = base64.b64encode(data.encode("utf-8")).decode()
     result_encoded=double_encoded_data
     return response.res_success(result_encoded)
 
@@ -50,8 +49,7 @@ def decode():
     
     try:
         decoded_data = base64.b64decode(encoded_data).decode('utf-8')
-        double_decoded_data = base64.b64decode(decoded_data).decode('utf-32-be')
-        result_decode = double_decoded_data
+        result_decode = decoded_data
         return response.res_success(result_decode)
     except (base64.binascii.Error, UnicodeDecodeError):
         return response.res_error()

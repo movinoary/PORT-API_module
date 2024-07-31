@@ -1,16 +1,19 @@
 from flask import Flask, request, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
+from dotenv import load_dotenv
 import os
 import response
 import base64
 import json
 import random
 import string
+import jwt
 
 app = Flask(__name__)
 path = '/api/v-1'
 CORS(app)
+load_dotenv()
 
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -21,6 +24,11 @@ def custom_id(length):
     random_segment = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
     return random_segment
 
+
+@app.route("/")
+def home():
+    return "WELCOME TO VO MODULE"
+
 @app.route(f'{path}/')
 def wellcome():
     return response.res_success("Hello") 
@@ -30,6 +38,32 @@ def generate_uuid(element):
     code=element.upper()
     id=f"VO{code}-3010-{custom_id(5)}-8246{custom_id(3)}-{custom_id(10)}-{custom_id(5)}"
     return response.res_success(id) 
+
+@app.route(f'{path}/encode-jwt', methods=['POST'])
+def encodeJWT():
+    data = request.json.get('jwt', '')
+    token=jwt.encode(
+        data,
+        os.getenv("SECRET_KEY"),
+        algorithm="HS256"
+    )
+    return response.res_success(token)
+
+@app.route(f'{path}/decode-jwt', methods=['POST'])
+def decodeJWT():
+    token = request.json.get('token', '')
+    try:
+        decode = jwt.decode(
+            token, 
+            os.getenv("SECRET_KEY"),
+            algorithms=["HS256"]
+        )
+        return response.res_success(decode)
+    except jwt.ExpiredSignatureError:
+        return response.res_error( "Token has expired")
+    except  jwt.InvalidTokenError: 
+        return response.res_error("Invalid token")
+        
     
 @app.route(f'{path}/encode', methods=['POST'])
 def encode():

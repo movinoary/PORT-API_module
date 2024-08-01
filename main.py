@@ -63,7 +63,6 @@ def decodeJWT():
         return response.res_error( "Token has expired")
     except  jwt.InvalidTokenError: 
         return response.res_error("Invalid token")
-        
     
 @app.route(f'{path}/encode', methods=['POST'])
 def encode():
